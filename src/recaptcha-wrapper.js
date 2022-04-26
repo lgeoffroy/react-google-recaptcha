@@ -10,8 +10,15 @@ function getOptions() {
 
 function getURL() {
   const dynamicOptions = getOptions();
+
+  if (dynamicOptions.enterprise && dynamicOptions.useRecaptchaNet) {
+    throw new Error("Cannot use both reCaptchaNet and enterprise.");
+  }
+
+  const scriptName = dynamicOptions.enterprise ? "enterprise" : "api";
   const hostname = dynamicOptions.useRecaptchaNet ? "recaptcha.net" : "www.google.com";
-  return `https://${hostname}/recaptcha/api.js?onload=${callbackName}&render=explicit`;
+
+  return `https://${hostname}/recaptcha/${scriptName}.js?onload=${callbackName}&render=explicit`;
 }
 
 export default makeAsyncScriptLoader(getURL, {
